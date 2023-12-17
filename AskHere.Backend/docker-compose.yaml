@@ -1,0 +1,47 @@
+version: "3.8"
+name: askhere
+
+services:
+    askhere-users:
+        container_name: askhere.users
+        build:
+            context: .
+            dockerfile: ./AskHere.Users/Dockerfile
+        command: "php artisan serve --host=0.0.0.0"
+        ports:
+            - "8000:8000"
+        depends_on:
+            - mysql
+            - redis
+    askhere-questions:
+        container_name: askhere.questions
+        build:
+            context: .
+            dockerfile: ./AskHere.Questions/Dockerfile
+        command: "php artisan serve --host=0.0.0.0"
+        ports:
+            - "8001:8000"
+        depends_on:
+            - mysql
+            - redis
+            - askhere-users
+    mysql:
+        container_name: mysql
+        image: mysql
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - mysql_data:/var/lib/mysql
+        ports:
+            - 3306:3306
+    redis:
+        container_name: redis
+        image: redis
+        volumes:
+            - redis_data:/var/lib/redis
+        ports:
+            - 6379:6379
+
+volumes:
+    mysql_data:
+    redis_data:
