@@ -22,5 +22,5 @@ RUN apt-get update && apt-get install -y \
     --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /app
-COPY ./AskHere.Questions .
+COPY ./AskHere.Users .
 RUN composer install

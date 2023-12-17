@@ -2,8 +2,8 @@ version: "3.8"
 name: askhere
 
 services:
-    askhere-users:
-        container_name: askhere.users
+    users:
+        container_name: users
         build:
             context: .
             dockerfile: ./AskHere.Users/Dockerfile
@@ -13,8 +13,8 @@ services:
         depends_on:
             - mysql
             - redis
-    askhere-questions:
-        container_name: askhere.questions
+    questions:
+        container_name: questions
         build:
             context: .
             dockerfile: ./AskHere.Questions/Dockerfile
@@ -24,7 +24,7 @@ services:
         depends_on:
             - mysql
             - redis
-            - askhere-users
+            - users
     mysql:
         container_name: mysql
         image: mysql
