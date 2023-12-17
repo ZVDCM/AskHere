@@ -10,9 +10,19 @@ services:
         command: "php artisan serve --host=0.0.0.0"
         ports:
             - "8000:8000"
+        volumes:
+            - ./AskHere.Users:/app/AskHere.Users
         depends_on:
             - mysql
             - redis
+    users-queue:
+        container_name: users-queue
+        build:
+            context: .
+            dockerfile: ./AskHere.Users/Dockerfile
+        command: "php artisan queue:work"
+        depends_on:
+            - users
     questions:
         container_name: questions
         build:
@@ -21,10 +31,20 @@ services:
         command: "php artisan serve --host=0.0.0.0"
         ports:
             - "8001:8000"
+        volumes:
+            - ./AskHere.Questions:/app/AskHere.Questions
         depends_on:
             - mysql
             - redis
             - users
+    questions-queue:
+        container_name: questions-queue
+        build:
+            context: .
+            dockerfile: ./AskHere.Questions/Dockerfile
+        command: "php artisan queue:work"
+        depends_on:
+            - questions
     mysql:
         container_name: mysql
         image: mysql
