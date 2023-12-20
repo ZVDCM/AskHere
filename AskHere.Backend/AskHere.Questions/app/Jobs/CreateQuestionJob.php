@@ -20,6 +20,7 @@ class CreateQuestionJob implements ShouldQueue
      */
     public function __construct($data)
     {
+        $this->onQueue('users');
         $this->$data = $data;
     }
 

@@ -20,9 +20,10 @@ services:
         build:
             context: .
             dockerfile: ./AskHere.Users/Dockerfile
-        command: "php artisan queue:work"
+        command: "php artisan queue:work --queue=users"
         depends_on:
-            - users
+            - mysql
+            - redis
     questions:
         container_name: questions
         build:
@@ -36,15 +37,15 @@ services:
         depends_on:
             - mysql
             - redis
-            - users
     questions-queue:
         container_name: questions-queue
         build:
             context: .
             dockerfile: ./AskHere.Questions/Dockerfile
-        command: "php artisan queue:work"
+        command: "php artisan queue:work --queue=questions"
         depends_on:
-            - questions
+            - mysql
+            - redis
     mysql:
         container_name: mysql
         image: mysql

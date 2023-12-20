@@ -38,12 +38,12 @@ class AuthController extends Controller
 
     public function register(UserRegisterRequest $request)
     {
-        $values = $request->only(['name', 'email', 'password']);
+        $values = $request->only(['username', 'email', 'password']);
 
         $request->validated($values);
 
         $user = User::create([
-            'name' => $values['name'],
+            'username' => $values['username'],
             'email' => $values['email'],
             'password' => Hash::make($values['password'])
         ]);
