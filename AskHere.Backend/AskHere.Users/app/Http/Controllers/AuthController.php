@@ -15,11 +15,9 @@ class AuthController extends Controller
 
     public function login(UserLoginRequest $request)
     {
-        $credentials = $request->only(['email', 'password']);
+        $data = $request->safe()->only(['email', 'password']);
 
-        $request->validated($credentials);
-
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($data)) {
             return $this->error('', 'Unauthorized', 401);
         }
 
@@ -38,19 +36,19 @@ class AuthController extends Controller
 
     public function register(UserRegisterRequest $request)
     {
-        $values = $request->only(['username', 'email', 'password']);
-
-        $request->validated($values);
+        $data = $request->safe()->only(['username', 'email', 'password']);
 
         $user = User::create([
-            'username' => $values['username'],
-            'email' => $values['email'],
-            'password' => Hash::make($values['password'])
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
         ]);
 
         return $this->success([
             'user' => $user,
-            'token' => $user->createToken('AskHere Token')->plainTextToken
+            'token' => $user
+                ->createToken('AskHere Token')
+                ->plainTextToken
         ], code: 201);
     }
 }

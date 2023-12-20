@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\CreateQuestionContract;
+use App\Contracts\DeleteQuestionContract;
+use App\Contracts\UpdateQuestionContract;
+use App\Http\Requests\CreateQuestionRequest;
+use App\Http\Requests\UpdateQuestionRequest;
 use App\Jobs\CreateQuestionJob;
+use App\Jobs\DeleteQuestionJob;
+use App\Jobs\UpdateQuestionJob;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionsController extends Controller
 {
@@ -13,27 +21,39 @@ class QuestionsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateQuestionRequest $request)
     {
-        CreateQuestionJob::dispatch('asd');
+        $data = $request->safe()->only(['value']);
+        $user = Auth::user();
+
+        CreateQuestionJob::dispatch(
+            new CreateQuestionContract(
+                $user->id,
+                $user->username,
+                $data['value']
+            )
+        );
 
         return $this->success(code: 204);
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateQuestionRequest $request, string $id)
     {
-        //
+        $data = $request->safe()->only(['value']);
+        $user = Auth::user();
+
+        UpdateQuestionJob::dispatch(
+            new UpdateQuestionContract(
+                $id,
+                $user->id,
+                $data['value']
+            )
+        );
+
+        return $this->success(code: 204);
     }
 
     /**
@@ -41,6 +61,15 @@ class QuestionsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = Auth::user();
+
+        DeleteQuestionJob::dispatch(
+            new DeleteQuestionContract(
+                $id,
+                $user->id
+            )
+        );
+
+        return $this->success(code: 204);
     }
 }
