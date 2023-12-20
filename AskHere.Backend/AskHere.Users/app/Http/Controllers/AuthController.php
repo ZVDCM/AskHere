@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     use HttpResponse;
 
-    public function Login(UserLoginRequest $request)
+    public function login(UserLoginRequest $request)
     {
         $credentials = $request->only(['email', 'password']);
 
@@ -29,14 +29,14 @@ class AuthController extends Controller
         ]);
     }
 
-    public function Logout()
+    public function logout()
     {
         Auth::user()->currentAccessToken()->delete();
 
         return $this->success(code: 204);
     }
 
-    public function Register(UserRegisterRequest $request)
+    public function register(UserRegisterRequest $request)
     {
         $values = $request->only(['name', 'email', 'password']);
 
@@ -51,6 +51,6 @@ class AuthController extends Controller
         return $this->success([
             'user' => $user,
             'token' => $user->createToken('AskHere Token')->plainTextToken
-        ], 201);
+        ], code: 201);
     }
 }

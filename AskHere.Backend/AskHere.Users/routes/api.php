@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QuestionsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,10 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // public routes
-Route::post('login', [AuthController::class, 'Login']);
-Route::post('register', [AuthController::class, 'Register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 
 // private routes
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('logout', [AuthController::class, 'Logout']);
+
+    Route::post('questions', [QuestionsController::class, 'store']);
+
+    Route::post('logout', [AuthController::class, 'logout']);
 });
