@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Contracts\Questions\DeleteQuestionContract;
 use App\Models\Question;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +23,7 @@ class DeleteQuestionJob implements ShouldQueue
      */
     public function __construct(DeleteQuestionContract $data)
     {
-        $this->onQueue('questions');
+        $this->onQueue('users');
         $this->data = $data;
     }
 
@@ -31,8 +32,10 @@ class DeleteQuestionJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Question::where('id', $this->data->question_id)
-            ->where('user_id', $this->data->user_id)
-            ->delete();
+        $user = User::find($this->data->user_id);
+        $question = $user->questions()->find(
+            $this->data->question_id
+        );
+        $question->delete();
     }
 }

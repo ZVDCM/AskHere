@@ -15,6 +15,7 @@ use App\Jobs\DeleteQuestionJob;
 use App\Jobs\UpdateQuestionJob;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
+use Ramsey\Uuid\Uuid;
 
 class QuestionsController extends Controller
 {
@@ -28,15 +29,26 @@ class QuestionsController extends Controller
         $data = $request->safe()->only(['value']);
         $user = Auth::user();
 
+        $question = $user
+            ->questions()
+            ->create([
+                'id' => (string) Uuid::uuid4(),
+                'user_username' => $user->username,
+                'value' => $data['value'],
+            ]);
+
         CreateQuestionJob::dispatch(
             new CreateQuestionContract(
-                $user->id,
-                $user->username,
-                $data['value']
+                $question->id,
+                $question->user_id,
+                $question->user_username,
+                $question->value
             )
         );
 
-        return $this->success(code: 204);
+        return $this->success([
+            'question' => $question
+        ], code: 201);
     }
 
     public function answer(AnswerQuestionRequest $request, string $question_id)
@@ -44,51 +56,100 @@ class QuestionsController extends Controller
         $data = $request->safe()->only(['value']);
         $user = Auth::user();
 
+        $question = $user
+            ->questions()
+            ->find($question_id);
+        if (!$question) {
+            return $this->error(
+                message: 'Question not found',
+                code: 404
+            );
+        }
+
+        $answer = $question
+            ->answers()
+            ->create([
+                'id' => (string) Uuid::uuid4(),
+                'user_id' => $user->id,
+                'user_username' => $user->username,
+                'value' => $data['value'],
+            ]);
+
         AnswerQuestionJob::dispatch(
             new AnswerQuestionContract(
-                $user->id,
-                $user->username,
-                $question_id,
-                $data['value']
+                $answer->id,
+                $answer->user_id,
+                $answer->user_username,
+                $question->id,
+                $answer->value
             )
         );
 
-        return $this->success(code: 204);
+        return $this->success([
+            'answer' => $answer
+        ], code: 201);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuestionRequest $request, string $id)
+    public function update(UpdateQuestionRequest $request, string $question_id)
     {
         $data = $request->safe()->only(['value']);
-        $user = Auth::user();
+
+        $question = Auth::user()
+            ->questions()
+            ->find($question_id);
+        if (!$question) {
+            return $this->error(
+                message: 'Question not found',
+                code: 404
+            );
+        }
+
+        $question->update([
+            'value' => $data['value'],
+        ]);
 
         UpdateQuestionJob::dispatch(
             new UpdateQuestionContract(
-                $id,
-                $user->id,
-                $data['value']
+                $question->user_id,
+                $question->id,
+                $question->value
             )
         );
 
-        return $this->success(code: 204);
+        return $this->success([
+            'question' => $question
+        ], code: 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $question_id)
     {
-        $user = Auth::user();
+        $question = Auth::user()
+            ->questions()
+            ->find($question_id);
+        if (!$question) {
+            return $this->error(
+                message: 'Question not found',
+                code: 404
+            );
+        }
+
+        $question->delete();
 
         DeleteQuestionJob::dispatch(
             new DeleteQuestionContract(
-                $id,
-                $user->id
+                $question->user_id,
+                $question->id
             )
         );
 
-        return $this->success(code: 204);
+        return $this->success([
+            'question' => $question
+        ], code: 200);
     }
 }

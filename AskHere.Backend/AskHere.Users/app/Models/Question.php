@@ -9,9 +9,12 @@ class Question extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
     protected $fillable = [
+        'id',
         'user_id',
-        'username',
+        'user_username',
         'value',
     ];
 

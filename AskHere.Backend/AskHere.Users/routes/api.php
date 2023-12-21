@@ -28,10 +28,10 @@ Route::post('register', [AuthController::class, 'register']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::post('questions', [QuestionsController::class, 'store']);
-    Route::patch('questions/{id}', [QuestionsController::class, 'update']);
-    Route::delete('questions/{id}', [QuestionsController::class, 'destroy']);
+    Route::patch('questions/{question_id}', [QuestionsController::class, 'update']);
+    Route::delete('questions/{question_id}', [QuestionsController::class, 'destroy']);
 
-    Route::post('questions/{id}/answer', [QuestionsController::class, 'answer']);
+    Route::post('questions/{question_id}/answer', [QuestionsController::class, 'answer']);
 
     Route::post('logout', [AuthController::class, 'logout']);
 });

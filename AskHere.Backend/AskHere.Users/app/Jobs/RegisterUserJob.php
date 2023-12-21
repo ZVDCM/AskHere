@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Contracts\Questions\UpdateQuestionContract;
-use App\Models\Question;
+use App\Contracts\Users\RegisterUserContract;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -12,18 +11,18 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateQuestionJob implements ShouldQueue
+class RegisterUserJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private UpdateQuestionContract $data;
+    private RegisterUserContract $data;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(UpdateQuestionContract $data)
+    public function __construct(RegisterUserContract $data)
     {
-        $this->onQueue('users');
+        $this->onQueue('questions');
         $this->data = $data;
     }
 
@@ -32,12 +31,11 @@ class UpdateQuestionJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $user = User::find($this->data->user_id);
-        $question = $user->questions()->find(
-            $this->data->question_id
-        );
-        $question->update([
-            'value' => $this->data->value
+        User::create([
+            'id' => $this->data->id,
+            'username' => $this->data->username,
+            'email' => $this->data->email,
+            'password' => $this->data->password,
         ]);
     }
 }

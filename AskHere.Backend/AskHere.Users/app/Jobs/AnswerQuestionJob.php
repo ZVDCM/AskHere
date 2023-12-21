@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Contracts\Answers\AnswerQuestionContract;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,6 +31,15 @@ class AnswerQuestionJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        $user = User::find($this->data->user_id);
+        $question = $user->question()->find(
+            $this->data->question_id
+        );
+        $question->answers()->create([
+            'id' => $this->data->answer_id,
+            'user_id' => $this->data->user_id,
+            'user_username' => $user->username,
+            'value' => $this->data->value,
+        ]);
     }
 }

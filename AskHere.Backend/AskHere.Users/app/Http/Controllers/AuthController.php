@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Users\RegisterUserContract;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Jobs\RegisterUserJob;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Ramsey\Uuid\Uuid;
 
 class AuthController extends Controller
 {
@@ -37,12 +40,23 @@ class AuthController extends Controller
     public function register(UserRegisterRequest $request)
     {
         $data = $request->safe()->only(['username', 'email', 'password']);
+        $password = Hash::make($data['password']);
 
         $user = User::create([
+            'id' => (string) Uuid::uuid4(),
             'username' => $data['username'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password'])
+            'password' => $password
         ]);
+
+        RegisterUserJob::dispatch(
+            new RegisterUserContract(
+                $user->id,
+                $user->username,
+                $user->email,
+                $password
+            )
+        );
 
         return $this->success([
             'user' => $user,
