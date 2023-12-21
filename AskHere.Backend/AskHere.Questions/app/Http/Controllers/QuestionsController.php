@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AnswerResource;
 use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 
@@ -23,5 +24,11 @@ class QuestionsController extends Controller
     {
         $question = Question::findOrFail($id);
         return new QuestionResource($question);
+    }
+
+    public function answers(string $id)
+    {
+        $answers = Question::findOrFail($id)->answers;
+        return AnswerResource::collection($answers);
     }
 }

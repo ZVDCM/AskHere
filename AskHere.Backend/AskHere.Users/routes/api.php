@@ -31,5 +31,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::patch('questions/{id}', [QuestionsController::class, 'update']);
     Route::delete('questions/{id}', [QuestionsController::class, 'destroy']);
 
+    Route::post('questions/{id}/answer', [QuestionsController::class, 'answer']);
+
     Route::post('logout', [AuthController::class, 'logout']);
 });

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Answers\AnswerQuestionContract;
 use App\Contracts\Questions\CreateQuestionContract;
 use App\Contracts\Questions\DeleteQuestionContract;
 use App\Contracts\Questions\UpdateQuestionContract;
+use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\CreateQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use App\Jobs\AnswerQuestionJob;
 use App\Jobs\CreateQuestionJob;
 use App\Jobs\DeleteQuestionJob;
 use App\Jobs\UpdateQuestionJob;
@@ -29,6 +32,23 @@ class QuestionsController extends Controller
             new CreateQuestionContract(
                 $user->id,
                 $user->username,
+                $data['value']
+            )
+        );
+
+        return $this->success(code: 204);
+    }
+
+    public function answer(AnswerQuestionRequest $request, string $question_id)
+    {
+        $data = $request->safe()->only(['value']);
+        $user = Auth::user();
+
+        AnswerQuestionJob::dispatch(
+            new AnswerQuestionContract(
+                $user->id,
+                $user->username,
+                $question_id,
                 $data['value']
             )
         );
