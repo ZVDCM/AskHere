@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\CreateQuestionContract;
-use App\Contracts\DeleteQuestionContract;
-use App\Contracts\UpdateQuestionContract;
+use App\Contracts\Questions\CreateQuestionContract;
+use App\Contracts\Questions\DeleteQuestionContract;
+use App\Contracts\Questions\UpdateQuestionContract;
 use App\Http\Requests\CreateQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Jobs\CreateQuestionJob;
 use App\Jobs\DeleteQuestionJob;
 use App\Jobs\UpdateQuestionJob;
 use App\Traits\HttpResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class QuestionsController extends Controller

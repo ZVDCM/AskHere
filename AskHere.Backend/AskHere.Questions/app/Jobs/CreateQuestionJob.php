@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Contracts\CreateQuestionContract;
+use App\Contracts\Questions\CreateQuestionContract;
 use App\Models\Question;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;

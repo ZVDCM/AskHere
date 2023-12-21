@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Contracts\DeleteQuestionContract;
+use App\Contracts\Questions\DeleteQuestionContract;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
