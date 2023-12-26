@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: askhere-questions-depl
+spec:
+    selector:
+        matchLabels:
+            app: askhere-questions-service
+    template:
+        metadata:
+            labels:
+                app: askhere-questions-service
+        spec:
+            containers:
+                - name: askhere-questions-service
+                  image: zvdcm/askhere-questions-service:latest
+                  command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8001"]
+                  ports:
+                      - containerPort: 8001
+                  resources:
+                      requests:
+                          cpu: "100m"
+                          memory: "128Mi"
+                      limits:
+                          cpu: "500m"
+                          memory: "512Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: askhere-questions-queue-depl
+spec:
+    selector:
+        matchLabels:
+            app: askhere-questions-queue-service
+    template:
+        metadata:
+            labels:
+                app: askhere-questions-queue-service
+        spec:
+            containers:
+                - name: askhere-questions-queue-service
+                  image: zvdcm/askhere-questions-service:latest
+                  command: ["php", "artisan", "queue:work", "--queue=questions"]
+                  resources:
+                      requests:
+                          cpu: "100m"
+                          memory: "128Mi"
+                      limits:
+                          cpu: "500m"
+                          memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: askhere-questions-clusterip-srv
+spec:
+    type: ClusterIP
+    selector:
+        app: askhere-questions-service
+    ports:
+        - name: askhere-questions-service
+          protocol: TCP
+          port: 81
+          targetPort: 8001

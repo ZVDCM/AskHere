@@ -17,14 +17,14 @@ use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
-class QuestionsController extends Controller
+class AccountController extends Controller
 {
     use HttpResponse;
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateQuestionRequest $request)
+    public function createQuestion(CreateQuestionRequest $request)
     {
         $data = $request->safe()->only(['value']);
         $user = Auth::user();
@@ -51,7 +51,7 @@ class QuestionsController extends Controller
         ], code: 201);
     }
 
-    public function answer(AnswerQuestionRequest $request, string $question_id)
+    public function answerQuestion(AnswerQuestionRequest $request, string $question_id)
     {
         $data = $request->safe()->only(['value']);
         $user = Auth::user();
@@ -93,7 +93,7 @@ class QuestionsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuestionRequest $request, string $question_id)
+    public function updateQuestion(UpdateQuestionRequest $request, string $question_id)
     {
         $data = $request->safe()->only(['value']);
 
@@ -127,7 +127,7 @@ class QuestionsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $question_id)
+    public function deleteQuestion(string $question_id)
     {
         $question = Auth::user()
             ->questions()

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: askhere-users-depl
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: askhere-users-service
+    template:
+        metadata:
+            labels:
+                app: askhere-users-service
+        spec:
+            containers:
+                - name: askhere-users-service
+                  image: zvdcm/askhere-users-service:latest
+                  command: ["php", "artisan", "serve", "--host=0.0.0.0"]
+                  ports:
+                      - containerPort: 8000
+                  resources:
+                      requests:
+                          cpu: "100m"
+                          memory: "128Mi"
+                      limits:
+                          cpu: "500m"
+                          memory: "512Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: askhere-users-queue-depl
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: askhere-users-queue-service
+    template:
+        metadata:
+            labels:
+                app: askhere-users-queue-service
+        spec:
+            containers:
+                - name: askhere-users-queue-service
+                  image: zvdcm/askhere-users-service:latest
+                  command: ["php", "artisan", "queue:work", "--queue=users"]
+                  resources:
+                      requests:
+                          cpu: "100m"
+                          memory: "128Mi"
+                      limits:
+                          cpu: "500m"
+                          memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: askhere-users-clusterip-srv
+spec:
+    type: ClusterIP
+    selector:
+        app: askhere-users-service
+    ports:
+        - name: askhere-users-service
+          protocol: TCP
+          port: 80
+          targetPort: 8000
