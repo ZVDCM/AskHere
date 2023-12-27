@@ -14,7 +14,11 @@ spec:
             containers:
                 - name: askhere-questions-service
                   image: zvdcm/askhere-questions-service:latest
-                  command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8001"]
+                  command: ["/bin/sh", "-c"]
+                  args:
+                    - |
+                      php artisan migrate --force &&
+                      php artisan serve --host=0.0.0.0 --port=8001
                   ports:
                       - containerPort: 8001
                   resources:
