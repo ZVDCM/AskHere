@@ -5,30 +5,27 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AnswerResource;
 use App\Http\Resources\QuestionResource;
 use App\Models\Question;
+use App\Traits\HttpResponse;
 
 class QuestionsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use HttpResponse;
+
     public function index()
     {
         $questions = Question::all();
-        return QuestionResource::collection($questions);
+        return  $this->success(['questions' => QuestionResource::collection($questions)]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $question = Question::findOrFail($id);
-        return new QuestionResource($question);
+        return $this->success(['question' => new QuestionResource($question)]);
     }
 
     public function answers(string $id)
     {
         $answers = Question::findOrFail($id)->answers;
-        return AnswerResource::collection($answers);
+        return  $this->success(['questions' => AnswerResource::collection($answers)]);
     }
 }
