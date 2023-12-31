@@ -363,7 +363,7 @@ function HomeContainer({ user }: { user: IUser }) {
 				</form>
 			</DialogComponent>
 			{user && (
-				<div className="h-full max-w-[1000px] mx-auto">
+				<div className="h-full max-w-[1200px] mx-auto">
 					<article className="h-full flex flex-col">
 						<section className="h-[10%] flex justify-between items-center">
 							<span>@&nbsp;{user.username}</span>
