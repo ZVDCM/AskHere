@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('account', [AccountController::class, 'getProfile']);
 
-    Route::patch('account/questions/{question_id}', [AccountController::class, 'updateQuestion']);
+    Route::post('account/questions', [AccountController::class, 'createQuestion']);
     Route::patch('account/questions/{question_id}', [AccountController::class, 'updateQuestion']);
     Route::delete('account/questions/{question_id}', [AccountController::class, 'deleteQuestion']);
 
