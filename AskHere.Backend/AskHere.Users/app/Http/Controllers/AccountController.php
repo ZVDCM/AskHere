@@ -10,6 +10,9 @@ use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\CreateQuestionRequest;
 use App\Http\Requests\GetProfileRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use App\Http\Resources\AnswerResource;
+use App\Http\Resources\QuestionResource;
+use App\Http\Resources\UserResource;
 use App\Jobs\AnswerQuestionJob;
 use App\Jobs\CreateQuestionJob;
 use App\Jobs\DeleteQuestionJob;
@@ -25,7 +28,7 @@ class AccountController extends Controller
     public function getProfile(GetProfileRequest $request)
     {
         return $this->success([
-            'user' => Auth::user()
+            'user' => new UserResource(Auth::user())
         ]);
     }
 
@@ -52,7 +55,7 @@ class AccountController extends Controller
         );
 
         return $this->success([
-            'question' => $question
+            'question' => new QuestionResource($question)
         ], code: 201);
     }
 
@@ -91,7 +94,7 @@ class AccountController extends Controller
         );
 
         return $this->success([
-            'answer' => $answer
+            'answer' => new AnswerResource($answer)
         ], code: 201);
     }
 
@@ -122,7 +125,7 @@ class AccountController extends Controller
         );
 
         return $this->success([
-            'question' => $question
+            'question' => new QuestionResource($question)
         ], code: 200);
     }
 
@@ -148,7 +151,7 @@ class AccountController extends Controller
         );
 
         return $this->success([
-            'question' => $question
+            'question' => new QuestionResource($question)
         ], code: 200);
     }
 }
