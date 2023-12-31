@@ -186,6 +186,7 @@ function HomeContainer({ user }: { user: IUser }) {
 		questionElements,
 		deleteQuestion,
 		setQuestionAction,
+		questionsList,
 	]);
 
 	// GET QUESTIONS
@@ -406,9 +407,10 @@ function HomeContainer({ user }: { user: IUser }) {
 								id="answers"
 								className="relative flex-1 border-l-[1px] overflow-y-auto overflow-x-hidden"
 							>
-								{targetQuestion && (
+								{Object.keys(targetQuestion).length !== 0 && (
 									<button
-										className="sticky top-0 right-0 border p-2 float-end bg-white"
+										id="answer-button"
+										className="sticky top-0 border p-2 bg-white m-auto"
 										onClick={() =>
 											answerQuestionRef.current.showModal()
 										}
@@ -416,6 +418,7 @@ function HomeContainer({ user }: { user: IUser }) {
 										Answer Question
 									</button>
 								)}
+								<div className="flex flex-col gap-4"></div>
 							</section>
 						</section>
 					</article>

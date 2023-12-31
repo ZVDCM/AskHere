@@ -19,3 +19,28 @@ body,
 .question-selected {
 	border: 2px solid;
 }
+
+#questions:not(:has(.question))::after {
+	content: "Create a question";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: gray;
+}
+#answers:not(:has(#answer-button))::after {
+	content: "Select a question";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: gray;
+}
+#answers:has(#answer-button):not(:has(.answer))::after {
+	content: "Answer the question";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: gray;
+}
