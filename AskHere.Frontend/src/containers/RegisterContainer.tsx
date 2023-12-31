@@ -59,7 +59,7 @@ function RegisterContainer() {
 			{isLoading && <LoadingComponent />}
 			<article className="w-[400px] border p-[2rem]">
 				<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-					<section className="flex flex-col gap-4">
+					<section className="flex flex-col gap-2">
 						<div className="flex flex-col">
 							<label htmlFor="username">Username</label>
 							<input
@@ -104,7 +104,7 @@ function RegisterContainer() {
 						</div>
 					</section>
 					<hr />
-					<section className="flex flex-col gap-4">
+					<section className="flex flex-col gap-2">
 						<button type="submit" className="w-full border p-2">
 							Register
 						</button>

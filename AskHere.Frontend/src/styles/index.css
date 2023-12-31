@@ -15,3 +15,7 @@ body,
 #root {
 	min-height: 100dvh;
 }
+
+.question-selected {
+	border: 2px solid;
+}

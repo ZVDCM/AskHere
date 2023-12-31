@@ -1,3 +1,4 @@
+import { Message, Status } from "./response";
 import { Token } from "./token";
 
 export interface ILoginPayload {
@@ -6,8 +7,8 @@ export interface ILoginPayload {
 }
 
 export interface ILoginResponse {
-	status: "success" | "error";
-	message: string | null;
+	status: Status;
+	message: Message;
 	data: {
 		token: Token;
 	};

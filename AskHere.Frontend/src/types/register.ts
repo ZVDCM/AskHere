@@ -1,3 +1,4 @@
+import { Message, Status } from "./response";
 import { Token } from "./token";
 
 export interface IRegisterPayload {
@@ -8,8 +9,8 @@ export interface IRegisterPayload {
 }
 
 export interface IRegisterResponse {
-	status: "success" | "error";
-	message: string | null;
+	status: Status;
+	message: Message;
 	data: {
 		token: Token;
 	};
