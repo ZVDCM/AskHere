@@ -32,9 +32,9 @@ function QuestionComponent({
 					<section className="flex flex-col p-2">
 						<span>@{question.userUsername}</span>
 						<div className="text-[0.8rem] text-[gray]">
-							<p>{moment(question.createdAt).format("ll")}</p>
+							<p>{moment(question.createdAt).format("lll")}</p>
 							{question.updatedAt !== question.createdAt && (
-								<p>{moment(question.updatedAt).format("ll")}</p>
+								<p>{moment(question.updatedAt).format("lll")}</p>
 							)}
 						</div>
 					</section>
