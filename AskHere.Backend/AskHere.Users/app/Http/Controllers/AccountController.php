@@ -8,6 +8,7 @@ use App\Contracts\Questions\DeleteQuestionContract;
 use App\Contracts\Questions\UpdateQuestionContract;
 use App\Http\Requests\AnswerQuestionRequest;
 use App\Http\Requests\CreateQuestionRequest;
+use App\Http\Requests\GetProfileRequest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Jobs\AnswerQuestionJob;
 use App\Jobs\CreateQuestionJob;
@@ -21,9 +22,13 @@ class AccountController extends Controller
 {
     use HttpResponse;
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function getProfile(GetProfileRequest $request)
+    {
+        return $this->success([
+            'user' => Auth::user()
+        ]);
+    }
+
     public function createQuestion(CreateQuestionRequest $request)
     {
         $data = $request->safe()->only(['value']);
@@ -90,9 +95,6 @@ class AccountController extends Controller
         ], code: 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function updateQuestion(UpdateQuestionRequest $request, string $question_id)
     {
         $data = $request->safe()->only(['value']);
@@ -124,9 +126,6 @@ class AccountController extends Controller
         ], code: 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function deleteQuestion(string $question_id)
     {
         $question = Auth::user()
