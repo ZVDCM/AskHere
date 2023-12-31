@@ -25,7 +25,6 @@ class AuthController extends Controller
         }
 
         return $this->success([
-            'user' => Auth::user(),
             'token' => Auth::user()->createToken('AskHere Token')->plainTextToken
         ]);
     }
@@ -41,6 +40,14 @@ class AuthController extends Controller
     {
         $data = $request->safe()->only(['username', 'email', 'password']);
         $password = Hash::make($data['password']);
+
+        if (User::where('email', $data['email'])->exists()) {
+            return $this->error('', 'User with this email already exists', 409);
+        }
+        
+        if (User::where('username', $data['username'])->exists()) {
+            return $this->error('', 'User with this username already exists', 409);
+        }
 
         $user = User::create([
             'id' => (string) Uuid::uuid4(),
@@ -59,7 +66,6 @@ class AuthController extends Controller
         );
 
         return $this->success([
-            'user' => $user,
             'token' => $user
                 ->createToken('AskHere Token')
                 ->plainTextToken
