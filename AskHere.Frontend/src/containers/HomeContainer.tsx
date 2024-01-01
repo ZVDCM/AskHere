@@ -135,51 +135,74 @@ function HomeContainer({ user }: { user: IUser }) {
 
 	// FIND QUESTIONS
 	useEffect(() => {
-		const elements = Array.from(
-			document.getElementsByClassName("question")
-		);
-		setQuestionElements(elements as HTMLDivElement[]);
+		const populateQuestionElements = () => {
+			const elements = Array.from(
+				document.getElementsByClassName("question")
+			);
+			setQuestionElements(elements as HTMLDivElement[]);
+		};
+
+		populateQuestionElements();
 	}, [questionsList]);
 
 	// HANDLE QUESTIONS
 	useEffect(() => {
-		if (Object.keys(targetQuestion).length) {
-			updateQuestionValueRef.current.value = targetQuestion.value;
-
-			questionElements.forEach((element) =>
-				element.id === targetQuestion.id.toString()
-					? element.classList.add("question-selected")
-					: element.classList.remove("question-selected")
-			);
-		}
-		switch (questionAction) {
-			case "update": {
-				updateQuestionRef.current.showModal();
-				setQuestionAction("");
-				break;
+		const populateUpdateQuestionForm = () => {
+			if (Object.keys(targetQuestion).length) {
+				updateQuestionValueRef.current.value = targetQuestion.value;
 			}
-			case "delete": {
-				if (confirm("Are you sure you want to delete this question?")) {
-					const questionId = targetQuestion.id.toString();
-					deleteQuestion({
-						questionId,
-					}).then((response) => {
-						const question = (
-							response as { data: IQuestionResponse }
-						).data.data.question;
-						setQuestionsList(
-							questionsList.filter((q) => q.id !== question.id)
-						);
-					});
+		};
+		const highlightSelectedQuestion = () => {
+			if (Object.keys(targetQuestion).length) {
+				questionElements.forEach((element) =>
+					element.id === targetQuestion.id.toString()
+						? element.classList.add("question-selected")
+						: element.classList.remove("question-selected")
+				);
+			}
+		};
+		const handleQuestionAction = () => {
+			switch (questionAction) {
+				case "update": {
+					updateQuestionRef.current.showModal();
+					setQuestionAction("");
+					break;
 				}
-				setQuestionAction("");
-				break;
+				case "delete": {
+					if (
+						confirm(
+							"Are you sure you want to delete this question?"
+						)
+					) {
+						const questionId = targetQuestion.id.toString();
+						deleteQuestion({
+							questionId,
+						}).then((response) => {
+							const question = (
+								response as { data: IQuestionResponse }
+							).data.data.question;
+							setQuestionsList(
+								questionsList.filter(
+									(q) => q.id !== question.id
+								)
+							);
+						});
+					}
+					setQuestionAction("");
+					break;
+				}
+				case "":
+					break;
+				default:
+					throw new Error(
+						`Invalid questionAction: ${questionAction}`
+					);
 			}
-			case "":
-				break;
-			default:
-				throw new Error(`Invalid questionAction: ${questionAction}`);
-		}
+		};
+
+		populateUpdateQuestionForm();
+		highlightSelectedQuestion();
+		handleQuestionAction();
 	}, [
 		targetQuestion,
 		questionAction,
@@ -191,66 +214,97 @@ function HomeContainer({ user }: { user: IUser }) {
 
 	// GET QUESTIONS
 	useEffect(() => {
-		if (questionData) {
-			setQuestionsList(questionData.data.questions);
-		}
+		const populateQuestionList = () => {
+			if (questionData) {
+				setQuestionsList(questionData.data.questions);
+			}
+		};
+		populateQuestionList();
 	}, [questionData]);
 
 	// CREATE QUESTION
 	useEffect(() => {
-		if (isCreateQuestionSuccess) {
-			createQuestionRef.current.close();
-		}
-		if (isCreateQuestionError && createQuestionError) {
-			alert(
-				`Create question failed: ${
-					(createQuestionError as { data: { message: string } }).data
-						.message
-				}`
-			);
-		}
+		const closeOnSuccessCreateQuestionDialog = () => {
+			if (isCreateQuestionSuccess) {
+				createQuestionRef.current.close();
+			}
+		};
+		const alertOnCreateQuestionError = () => {
+			if (isCreateQuestionError && createQuestionError) {
+				alert(
+					`Create question failed: ${
+						(createQuestionError as { data: { message: string } })
+							.data.message
+					}`
+				);
+			}
+		};
+
+		closeOnSuccessCreateQuestionDialog();
+		alertOnCreateQuestionError();
 	}, [isCreateQuestionSuccess, isCreateQuestionError, createQuestionError]);
 
 	// DELETE QUESTION
 	useEffect(() => {
-		if (isDeleteQuestionError && deleteQuestionError) {
-			alert(
-				`Delete question failed: ${
-					(deleteQuestionError as { data: { message: string } }).data
-						.message
-				}`
-			);
-		}
+		const alertOnDeleteQuestionError = () => {
+			if (isDeleteQuestionError && deleteQuestionError) {
+				alert(
+					`Delete question failed: ${
+						(deleteQuestionError as { data: { message: string } })
+							.data.message
+					}`
+				);
+			}
+		};
+
+		alertOnDeleteQuestionError();
 	}, [isDeleteQuestionError, deleteQuestionError]);
 
 	// UPDATE QUESTION
 	useEffect(() => {
-		if (isUpdateQuestionSuccess) {
-			updateQuestionRef.current.close();
-		}
-		if (isUpdateQuestionError && updateQuestionError) {
-			alert(
-				`Update question failed: ${
-					(updateQuestionError as { data: { message: string } }).data
-						.message
-				}`
-			);
-		}
+		const closeOnSuccessUpdateQuestionDialog = () => {
+			if (isUpdateQuestionSuccess) {
+				updateQuestionRef.current.close();
+			}
+		};
+		const alertOnUpdateQuestionError = () => {
+			if (isUpdateQuestionError && updateQuestionError) {
+				alert(
+					`Update question failed: ${
+						(updateQuestionError as { data: { message: string } })
+							.data.message
+					}`
+				);
+			}
+		};
+
+		closeOnSuccessUpdateQuestionDialog();
+		alertOnUpdateQuestionError();
 	}, [isUpdateQuestionSuccess, isUpdateQuestionError, updateQuestionError]);
 
 	// ANSWER QUESTION
 	useEffect(() => {
-		if (isAnswerQuestionSuccess) {
-			answerQuestionRef.current.close();
-		}
-		if (isAnswerQuestionError && answerQuestionError) {
-			alert(
-				`Answer question failed: ${
-					(answerQuestionError as { data: { message: string } }).data
-						.message
-				}`
-			);
-		}
+		const closeOnSuccessAnswerQuestionDialog = () => {
+			if (isAnswerQuestionSuccess) {
+				answerQuestionRef.current.close();
+			}
+		};
+		const alertOnAnswerQuestionError = () => {
+			if (isAnswerQuestionError && answerQuestionError) {
+				alert(
+					`Answer question failed: ${
+						(
+							answerQuestionError as {
+								data: { message: string };
+							}
+						).data.message
+					}`
+				);
+			}
+		};
+
+		closeOnSuccessAnswerQuestionDialog();
+		alertOnAnswerQuestionError();
 	}, [isAnswerQuestionSuccess, isAnswerQuestionError, answerQuestionError]);
 
 	return (
@@ -408,15 +462,17 @@ function HomeContainer({ user }: { user: IUser }) {
 								className="relative flex-1 border-l-[1px] overflow-y-auto overflow-x-hidden"
 							>
 								{Object.keys(targetQuestion).length !== 0 && (
-									<button
-										id="answer-button"
-										className="sticky top-0 border p-2 bg-white m-auto"
-										onClick={() =>
-											answerQuestionRef.current.showModal()
-										}
-									>
-										Answer Question
-									</button>
+									<div className="sticky top-0">
+										<button
+											id="answer-button"
+											className="float-end border p-2 bg-white"
+											onClick={() =>
+												answerQuestionRef.current.showModal()
+											}
+										>
+											Answer Question
+										</button>
+									</div>
 								)}
 								<div className="flex flex-col gap-4"></div>
 							</section>
