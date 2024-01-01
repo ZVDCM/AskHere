@@ -19,7 +19,7 @@ function HomePage() {
 	}, [data, error, isSuccess, isError, navigate, dispatch]);
 
 	return (
-		<div className="flex flex-col">
+		<div>
 			{isSuccess && data && (
 				<>
 					<HeaderLayout header={"Q&A"} />

@@ -5,7 +5,7 @@ import RegisterContainer from "@containers/RegisterContainer";
 
 function RegisterPage() {
 	return (
-		<div className="flex flex-col relative">
+		<div>
 			<HeaderLayout header={"REGISTER"} />
 			<RegisterContainer />
 			<FooterLayout />

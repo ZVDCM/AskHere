@@ -5,7 +5,7 @@ import FooterLayout from "@components/layouts/FooterLayout";
 
 function LoginPage() {
 	return (
-		<div className="flex flex-col">
+		<div>
 			<HeaderLayout header={"LOGIN"} />
 			<LoginContainer />
 			<FooterLayout />
