@@ -17,7 +17,6 @@ function RegisterContainer() {
 	useEffect(() => {
 		if (isSuccess) {
 			alert("Registration successful");
-			sessionStorage.setItem("token", data.data.token);
 			navigate("/login");
 		}
 		if (isError && error) {

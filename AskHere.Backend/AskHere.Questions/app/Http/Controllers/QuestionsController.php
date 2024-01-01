@@ -26,6 +26,6 @@ class QuestionsController extends Controller
     public function answers(string $id)
     {
         $answers = Question::findOrFail($id)->answers;
-        return  $this->success(['questions' => AnswerResource::collection($answers)]);
+        return  $this->success(['answers' => AnswerResource::collection($answers)]);
     }
 }

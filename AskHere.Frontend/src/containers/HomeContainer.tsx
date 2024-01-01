@@ -10,20 +10,42 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IUser } from "src/types/user";
 import { IQuestion, IQuestionResponse } from "src/types/question";
-import { useGetQuestionsQuery } from "@services/features/questions/questionsSlice.api";
+import {
+	useGetQuestionAnswersQuery,
+	useGetQuestionsQuery,
+} from "@services/features/questions/questionsSlice.api";
 import QuestionComponent from "@components/QuestionComponent";
+import { IAnswer } from "src/types/answer";
+import AnswerComponent from "@components/AnswerComponent";
 
 function HomeContainer({ user }: { user: IUser }) {
 	const navigate = useNavigate();
+
+	const createQuestionRef = useRef({} as HTMLDialogElement);
+	const updateQuestionRef = useRef({} as HTMLDialogElement);
+	const answerQuestionRef = useRef({} as HTMLDialogElement);
+
+	const createQuestionValueRef = useRef({} as HTMLInputElement);
+	const updateQuestionValueRef = useRef({} as HTMLInputElement);
+	const answerQuestionValueRef = useRef({} as HTMLInputElement);
+
+	const [questionsList, setQuestionsList] = useState([] as IQuestion[]);
 	const [questionAction, setQuestionAction] = useState("");
 	const [targetQuestion, setTargetQuestion] = useState({} as IQuestion);
-	const [questionsList, setQuestionsList] = useState([] as IQuestion[]);
 	const [questionElements, setQuestionElements] = React.useState(
 		[] as HTMLDivElement[]
 	);
 
+	const [answersList, setAnswersList] = useState([] as IAnswer[]);
+
 	const { data: questionData, isLoading: isGetQuestionsLoading } =
 		useGetQuestionsQuery(null);
+
+	const { data: answerData, isLoading: isGetQuestionAnswersLoading } =
+		useGetQuestionAnswersQuery({
+			questionId: targetQuestion.id?.toString(),
+		});
+
 	const [
 		createQuestion,
 		{
@@ -50,7 +72,6 @@ function HomeContainer({ user }: { user: IUser }) {
 			error: deleteQuestionError,
 		},
 	] = useDeleteQuestionMutation();
-
 	const [
 		answerQuestion,
 		{
@@ -60,14 +81,6 @@ function HomeContainer({ user }: { user: IUser }) {
 			error: answerQuestionError,
 		},
 	] = useAnswerQuestionMutation();
-
-	const createQuestionRef = useRef({} as HTMLDialogElement);
-	const updateQuestionRef = useRef({} as HTMLDialogElement);
-	const answerQuestionRef = useRef({} as HTMLDialogElement);
-
-	const createQuestionValueRef = useRef({} as HTMLInputElement);
-	const updateQuestionValueRef = useRef({} as HTMLInputElement);
-	const answerQuestionValueRef = useRef({} as HTMLInputElement);
 
 	const handleLogout = () => {
 		sessionStorage.removeItem("token");
@@ -282,6 +295,17 @@ function HomeContainer({ user }: { user: IUser }) {
 		alertOnUpdateQuestionError();
 	}, [isUpdateQuestionSuccess, isUpdateQuestionError, updateQuestionError]);
 
+	// GET QUESTION ANSWERS
+	useEffect(() => {
+		const populateQuestionAnswersList = () => {
+			if (answerData) {
+				console.log(answerData);
+				setAnswersList(answerData.data.answers);
+			}
+		};
+		populateQuestionAnswersList();
+	}, [answerData]);
+
 	// ANSWER QUESTION
 	useEffect(() => {
 		const closeOnSuccessAnswerQuestionDialog = () => {
@@ -313,6 +337,7 @@ function HomeContainer({ user }: { user: IUser }) {
 				isCreateQuestionLoading ||
 				isUpdateQuestionLoading ||
 				isDeleteQuestionLoading ||
+				isGetQuestionAnswersLoading ||
 				isAnswerQuestionLoading) && <LoadingComponent />}
 			<DialogComponent dialogRef={createQuestionRef}>
 				<section className="flex justify-center items-center">
@@ -417,7 +442,7 @@ function HomeContainer({ user }: { user: IUser }) {
 				</form>
 			</DialogComponent>
 			{user && (
-				<div className="h-full max-w-[1200px] mx-auto">
+				<div className="h-full max-w-[1200px] mx-auto px-4">
 					<article className="h-full flex flex-col">
 						<section className="h-[10%] flex justify-between items-center">
 							<span>@&nbsp;{user.username}</span>
@@ -446,6 +471,7 @@ function HomeContainer({ user }: { user: IUser }) {
 									{questionsList.map((question) => (
 										<QuestionComponent
 											key={question.id}
+											userId={user.id}
 											question={question}
 											setTargetQuestion={
 												setTargetQuestion
@@ -462,10 +488,10 @@ function HomeContainer({ user }: { user: IUser }) {
 								className="relative flex-1 border-l-[1px] overflow-y-auto overflow-x-hidden"
 							>
 								{Object.keys(targetQuestion).length !== 0 && (
-									<div className="sticky top-0">
+									<div className="sticky top-0 flex justify-end mb-2">
 										<button
 											id="answer-button"
-											className="float-end border p-2 bg-white"
+											className="border p-2 bg-white"
 											onClick={() =>
 												answerQuestionRef.current.showModal()
 											}
@@ -474,7 +500,14 @@ function HomeContainer({ user }: { user: IUser }) {
 										</button>
 									</div>
 								)}
-								<div className="flex flex-col gap-4"></div>
+								<div className="flex flex-col gap-4">
+									{answersList.map((answer) => (
+										<AnswerComponent
+											key={answer.id}
+											answer={answer}
+										/>
+									))}
+								</div>
 							</section>
 						</section>
 					</article>

@@ -6,10 +6,12 @@ function QuestionComponent({
 	question,
 	setTargetQuestion,
 	setQuestionAction,
+	userId,
 }: {
 	question: IQuestion;
 	setTargetQuestion: React.Dispatch<React.SetStateAction<IQuestion>>;
 	setQuestionAction: React.Dispatch<React.SetStateAction<string>>;
+	userId: string;
 }) {
 	const handleClick = () => {
 		setTargetQuestion(question);
@@ -26,7 +28,6 @@ function QuestionComponent({
 				<div
 					className="question flex gap-4 border border-r-0 cursor-pointer"
 					id={question.id.toString()}
-					data-userid={question.userId}
 					onClick={handleClick}
 				>
 					<section className="flex flex-col p-2">
@@ -34,27 +35,31 @@ function QuestionComponent({
 						<div className="text-[0.8rem] text-[gray]">
 							<p>{moment(question.createdAt).format("lll")}</p>
 							{question.updatedAt !== question.createdAt && (
-								<p>{moment(question.updatedAt).format("lll")}</p>
+								<p>
+									{moment(question.updatedAt).format("lll")}
+								</p>
 							)}
 						</div>
 					</section>
 					<section className="flex-1 border-l p-2">
 						<p>{question.value}</p>
 					</section>
-					<section className="border-l flex p-2 gap-2">
-						<button
-							className="flex-1 border p-2"
-							onClick={handleUpdate}
-						>
-							Update
-						</button>
-						<button
-							className="flex-1 border p-2"
-							onClick={handleDelete}
-						>
-							Delete
-						</button>
-					</section>
+					{userId === question.userId && (
+						<section className="border-l flex p-2 gap-2">
+							<button
+								className="flex-1 border p-2"
+								onClick={handleUpdate}
+							>
+								Update
+							</button>
+							<button
+								className="flex-1 border p-2"
+								onClick={handleDelete}
+							>
+								Delete
+							</button>
+						</section>
+					)}
 				</div>
 			)}
 		</>

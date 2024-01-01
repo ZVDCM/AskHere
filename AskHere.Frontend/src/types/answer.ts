@@ -7,7 +7,7 @@ export interface IAnswer {
 	questionId: number;
 	value: string;
 	createdAt: string;
-	updateAt: string;
+	updatedAt: string;
 }
 
 export interface IAnswerPayload {
